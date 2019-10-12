@@ -10,6 +10,8 @@ let db_config = parse(connectionString);
 // Port is a string, needs to be int
 db_config.port = parseInt(db_config.port);
 
+console.log(`Attempting to create databse with following config: ${db_config}`);
+
 // Migrate database
 createDb(db_config.database, {
     user: db_config.user,
@@ -18,6 +20,7 @@ createDb(db_config.database, {
     port: db_config.port
   })
   .then(() => {
+    console.log(`Attempting to migrate databse`);
     return migrate(db_config, "./sql_migrations/")
   })
   .then(() => {
@@ -32,6 +35,7 @@ createDb(db_config.database, {
 const app = express();
 
 var client = new pg.Client(connectionString);
+console.log(`Attempting to create databse with following connection string: ${connectionString}`);
 client.connect();
 
 app.get('/', (request, response) => {
