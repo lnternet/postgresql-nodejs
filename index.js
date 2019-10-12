@@ -10,7 +10,12 @@ let db_config = parse(connectionString);
 // Port is a string, needs to be int
 db_config.port = parseInt(db_config.port);
 
-console.log(`Attempting to create databse with following config: ${db_config}`);
+console.log(`Attempting to create databse with following config: 
+    user: ${db_config.user},
+    password: ${db_config.password},
+    host: ${db_config.host},
+    database: ${db_config.database},
+    port: ${db_config.port}`);
 
 // Migrate database
 createDb(db_config.database, {
