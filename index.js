@@ -10,7 +10,7 @@ let db_config = parse(connectionString);
 // Port is a string, needs to be int
 db_config.port = parseInt(db_config.port);
 
-console.log(`Attempting to create databse with following config: 
+console.log(`Attempting to create database with following config: 
     user: ${db_config.user},
     password: ${db_config.password},
     host: ${db_config.host},
@@ -40,7 +40,7 @@ createDb(db_config.database, {
 const app = express();
 
 var client = new pg.Client(connectionString);
-console.log(`Attempting to create databse with following connection string: ${connectionString}`);
+console.log(`Attempting to connecto to databse with following connection string: ${connectionString}`);
 client.connect();
 
 app.get('/', (request, response) => {
