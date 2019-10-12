@@ -1,55 +1,41 @@
 const express = require('express');
-const Pool = require('pg').Pool;
+const pg = require('pg');
 const { createDb, migrate } = require("postgres-migrations");
+var parse = require('pg-connection-string').parse;
 
 // Database config
-const db_host = process.env.DB_HOST || 'localhost';
-const db_name = process.env.DB_NAME || 'localDBB';
-const db_user = process.env.DB_USER || 'bc4035';
-const db_password = process.env.DB_PASSWORD || '1234';
-const db_port = process.env.DB_PORT || 5432;
+const connectionString = process.env.DATABASE_URL || `postgres://bc4035:1234@localhost:5432/localDBB`;
+let db_config = parse(connectionString);
 
-
+// Port is a string, needs to be int
+db_config.port = parseInt(db_config.port);
 
 // Migrate database
-createDb(db_name, {
-    user: db_user,
-    password: db_password,
-    host: db_host,
-    port: db_port
+createDb(db_config.database, {
+    user: db_config.user,
+    password: db_config.password,
+    host: db_config.host,
+    port: db_config.port
   })
   .then(() => {
-    return migrate({
-      database: db_name,
-      user: db_user,
-      password: db_password,
-      host: db_host,
-      port: db_port,
-    }, "./sql_migrations/")
+    return migrate(db_config, "./sql_migrations/")
   })
   .then(() => {
-      console.log('successful migration');
+    console.log('DB successfully migrated.');
   })
   .catch((err) => {
     console.log(err)
   })
 
 
-
-
 // API:
 const app = express();
 
-const postgreSQL_pool = new Pool({
-    user: db_user,
-    host: db_host,
-    database: db_name,
-    password: db_password,
-    port: db_port,
-  });
+var client = new pg.Client(connectionString);
+client.connect();
 
 app.get('/', (request, response) => {
-    postgreSQL_pool.query('SELECT * FROM users', (error, result) => {
+    client.query('SELECT * FROM users', (error, result) => {
         if (error) {
             response.status(500).send(error);
         }

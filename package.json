@@ -3,9 +3,13 @@
     "version": "1.0.0",
     "description": "Simple Node.js app connected to PostgreSQL serving data with Express.js",
     "main": "index.js",
+    "scripts": {
+        "start": "node index.js"
+    },
     "dependencies": {
         "express": "^4.17.1",
         "pg": "^7.12.1",
+        "pg-connection-string": "^2.1.0",
         "postgres-migrations": "^3.0.2"
     }
 }

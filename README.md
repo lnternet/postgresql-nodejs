@@ -10,3 +10,4 @@ Simple Node.js app connecting to PostgreSQL database serving data with Express.j
 - `\l` - list databases
 - `\c database` - switch to database
 - `\dt` - list tables
+- `\q` - quit psql
