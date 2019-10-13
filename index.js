@@ -83,8 +83,8 @@ async function startAPI(connectionString) {
 
         app.post('/user', (request, response) => {
             if (!request.body.firstName || !request.body.lastName)
-                response.status(400).send('Either first name or last name is missing').
-                
+                response.status(400).send('Either first name or last name is missing');
+
             client.query(`INSERT INTO users(FirstName, LastName) VALUES ('${request.body.firstName}', '${request.body.lastName}');`, (error, result) => {
                 if (error) { response.status(500).send(error); }
                 response.send();
