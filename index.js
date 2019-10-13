@@ -1,4 +1,5 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const pg = require('pg');
 const { createDb, migrate } = require("postgres-migrations");
 var parse = require('pg-connection-string').parse;
@@ -66,6 +67,7 @@ async function connectToDatabase(client, connectionString) {
 
 async function startAPI(connectionString) {
     const app = express();
+    app.use(bodyParser.json())
 
     var client = new pg.Client(connectionString);
     var isConnectedToDB = await connectToDatabase(client, connectionString);
@@ -73,15 +75,19 @@ async function startAPI(connectionString) {
     if (isConnectedToDB) {
         app.get('/', (request, response) => {
             client.query('SELECT * FROM users', (error, result) => {
-                if (error) {
-                    response.status(500).send(error);
-                }
-        
-                if (!result) {
-                    response.status(500).send('No result!');
-                }
-        
+                if (error) { response.status(500).send(error); }
+                if (!result) { response.status(500).send('No result!'); }
                 response.send(result.rows);
+            });
+        });
+
+        app.post('/user', (request, response) => {
+            if (!request.body.firstName || !request.body.lastName)
+                response.status(400).send('Either first name or last name is missing').
+                
+            client.query(`INSERT INTO users(FirstName, LastName) VALUES ('${request.body.firstName}', '${request.body.lastName}');`, (error, result) => {
+                if (error) { response.status(500).send(error); }
+                response.send();
             });
         });
         
